@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form id="addFormId">
+    <input type="hidden" th:value="${store.sid}" name="sid"/>
+    名称:<input  name="sname" th:value="${store.sname}" class="easyui-validatebox" data-options="required:true" /><br>
+    描述:<input  name="sinfo" th:value="${store.sinfo}" class="easyui-validatebox" data-options="required:true" /><br>
+   <!-- 类型:
+    <select name="booktype">
+        <option value="-1">&#45;&#45;请选择&#45;&#45;</option>
+        <option value="1" th:field="*{book.booktype}">小说</option>
+        <option value="2" th:field="*{book.booktype}">名著</option>
+    </select>
+    <br>
+    日期:
+    <input name="bookdate" type="text"
+           th:value="${#dates.format(book.bookdate,'yyyy-MM-dd')}"
+           class="easyui-datebox" required="required"></input> <br>
+    描述:<textarea rows="" cols="" name="des"  th:text="${book.des}"></textarea>
+    <br>-->
+</form>
+</body>
+</html>

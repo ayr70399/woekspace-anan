@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="p" class="easyui-panel"  title="条件查询"
+     style="width:1200px;height:100px;padding:10px;background:black;"
+     data-options="iconCls:'icon-save',closable:true,    
+	                collapsible:true,minimizable:true,maximizable:true">
+
+    <input class="easyui-textbox" id="booknameId" data-options="iconCls:'icon-search'" style="width:300px">
+    <input  type="radio" name="haha" value="1" >正常
+    <input  type="radio" name="haha" value="2">冻结
+    <!--   <select id="llevelid1"  name="llevelid"  class="easyui-combobox" name="dept" style="width:200px;"> 
+                   <option  value="-1">---请选择---</option>  
+             </select> -->
+    <a   id="btn" href="javaScript:queryBook()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
+</div>
+
+<input  type="hidden"  id="uid"  value="${loginUser.uid}">
+<table id="datagridId2"></table>
+<div  id="showDialogIdrole">
+    <ul  id="streeId1"></ul>
+    <input  type="button"  value="绑定"  id="bdrole">
+</div>
+
+<input type="button" onclick="exportFile()" value="导出Excel" >
+<input type="checkbox"  name="xz" value="sname">sname
+
+<input type="checkbox"  name="xz"  value="simg">simg
+
+<form action="../user/importExcel" method="post" enctype="multipart/form-data" >
+
+    <input type="file" name="file"/>
+    <input type="submit" value="导入excel"/>
+</form>
+<script type="text/javascript">
+    $(function (){
+        queryBook();
+
+
+
+    })
+
+    function exportExcel() {
+        location.href="../user/exportExcel";
+    }
+    function exportFile() {
+        var name="";
+        alert(1)
+        $("input[type=checkbox]:checked").each(function() {
+            name += ","+$(this).val();
+
+        })
+        name="id"+name;
+        alert(name)
+        location.href="../user/exportExcel?name="+name;
+    }
+
+    function queryBook(){
+        $('#datagridId2').datagrid({
+            url:'../user/queryUser',
+            method:"post",    //请求方式
+            pagination:true,    //显示分页工具栏
+            pageNumber:1,    //初始页码
+            pageSize:1,    //初始页面行数，必须在pageList中
+            pageList:[1,2,3,5,10,15,20],    //页面显示行数列表
+            fitColumns:true,    //自适应容器大小
+
+            striped:true,//斑马线效果
+            rownumbers:true,//显示行号
+            columns:[
+                [
+                {field:'uid',title:'编号',width:100},
+                {field:'uname',title:'名称',width:100},
+                {field:'upwd',title:'密码',width:100},
+
+
+
+
+
+                {field:'ll',title:'操作',width:100,
+                    formatter: function(value,row,index){
+                        var btn = '<a class="editcls"  href="javascript:bdRole('+row.uid+')"></a>';
+
+                        return btn;
+
+                    }
+                },
+
+            ]
+            ]  ,
+
+            onLoadSuccess:function(data){
+                $('.editcls').linkbutton({text:'绑定角色',plain:true,iconCls:'icon-filter'});
+            },
+            toolbar: [{
+                iconCls: 'icon-add',
+                text:'新增',
+                handler: function(){
+                    $('#showDialogId').dialog({
+                        title: '新增用户',
+                        width: 600,
+                        height: 500,
+                        closable: true,
+                        closed: false,
+                        cache: false,
+
+                        href: '../addJsp',
+                        modal: true ,
+                        buttons:[{
+                            text:'保存',
+                            handler:function(){
+                                $.ajax({
+                                    url:"../addUser",
+                                    type:"post",
+                                    data:$("#addFormId").serialize(),
+                                    dataType:"text",
+                                    success:function (){
+                                        $.messager.alert('提示','新增成功！！！');
+                                        $('#datagridId2').datagrid('reload');
+                                        $('#showDialogId').dialog("close");
+                                    },
+                                    error:function (){
+                                        $.messager.alert('警告','后台错误，请使用debug调试！！！');
+                                    }
+                                })
+                            }
+                        },{
+                            text:'关闭',
+                            handler:function(){
+                                $('#showDialogId').dialog("close");
+                            }
+                        }]
+                    });
+
+                }
+            },'-',{
+                iconCls: 'icon-remove',
+                text:'批量删除',
+                handler: function(){
+                    var arr = $('#datagridId2').datagrid('getSelections');
+                    var delid = "";
+                    for(var i=0;i<arr.length;i++){
+                        delid += ","+arr[i].userid;
+                    }
+                    delid = delid.substr(1);
+                    var   count=0;
+                    for(var i=0;i<arr.length;i++){
+                        if(arr[i].userzt==2){
+                            count++;
+                        };
+                    }
+
+
+                    if(delid == ""){
+                        $.messager.alert('警告','请选择要删除的！！！','error');
+                    }else{
+                        if(count==arr.length){
+                            $.get("../delUser", {"delid":delid},function(){
+                                $('#datagridId2').datagrid('reload');
+
+                            });
+                        }else{
+                            $.messager.alert('警告','只能删除冻结的用户！！！','error');
+                        }
+
+                    }
+
+
+
+
+
+                }
+            },'-',{
+                iconCls: 'icon-large-smartart',
+                text:'批量下架',
+                handler: function(){
+                    var arr = $('#datagridId2').datagrid('getSelections');
+                    var ynid = "";
+                    for(var i=0;i<arr.length;i++){
+                        ynid += ","+arr[i].sid;
+                    }
+                    ynid = ynid.substr(1);
+                    var   count=0;
+                    for(var i=0;i<arr.length;i++){
+                        if(arr[i].szt==1){
+                            count++;
+                        };
+                    }
+                    if(ynid == ""){
+                        $.messager.alert('警告','请选择要下架的书籍！！！','error');
+                    }else{
+
+                        if(count==arr.length){
+                            $.get("../updZt1", {"ynid":ynid},function(){
+                                $('#datagridId2').datagrid('reload');
+                            });
+                        }else{
+                            $.messager.alert('警告','只能修改上架的书籍！！！','error');
+                        }
+                    }
+                }
+            },'-',{
+                iconCls: 'icon-edit',
+                text:'修改',
+                handler: function(){
+
+                    var arr = $("#datagridId2").datagrid("getSelections");
+                    if(arr.length==0 || arr.length > 1){
+                        $.messager.alert('警告','只能修改单条数据！！！');
+                    }else{
+                        $('#showDialogId').dialog({
+                            title: '修改',
+                            width:500,
+                            height: 600,
+                            closed: false,
+                            cache: false,
+                            href:'../updUserJsp?userid='+arr[0].userid,
+                            modal: true ,
+                            buttons:[{
+                                text:'保存',
+                                handler:function(){
+                                    $.ajax({
+                                        url:"../updUser",
+                                        type:"post",
+                                        data:$("#addFormId").serialize(),
+                                        success:function (){
+                                            $('#showDialogId').dialog("close");
+                                            $('#datagridId2').datagrid('reload');
+                                            $.messager.show({
+                                                title:'修改成功！',
+                                                msg:'消息将在3秒后关闭。',
+                                                timeout:3000,
+                                                showType:'slide'
+                                            });
+
+                                        },
+                                        error:function (){
+                                            $.messager.show({
+                                                title:'添加失败，请联系管理员',
+                                                msg:'消息将在3秒后关闭。',
+                                                timeout:3000,
+                                                showType:'slide'
+                                            });
+                                        }
+                                    })
+                                }
+                            },{
+                                text:'关闭',
+                                handler:function(){
+                                    $('#showDialogId').dialog("close");
+                                    $('#datagridId2').datagrid('reload');
+                                }
+                            }]
+                        });
+                    }
+                }
+
+            }],
+
+
+        });
+    }
+
+    function  updzt(id,status){
+        $.ajax({
+            url:"${pageContext.request.contextPath }/updZt?userid="+id+"&userzt="+status,
+            type:"post",
+            success:function(){
+                $('#datagridId2').datagrid('reload');
+            },
+            error:function(){
+                alert("gun");
+            }
+        })
+
+    }
+    function  delUser(id){
+        $.ajax({
+            url:"${pageContext.request.contextPath }/delUser?delid="+id,
+            type:"post",
+            success:function(){
+                $('#datagridId').datagrid('reload');
+            },
+            error:function(){
+                alert("gun");
+            }
+        })
+    }
+    var  userid1;
+    function bdRole(id){
+        alert(id)
+        userid1=id;
+
+
+        $('#showDialogIdrole').dialog({
+            title: '绑定角色',
+            width: 600,
+            height: 500,
+            closable: true,
+            closed: false,
+            cache: false,
+
+        })
+        //加载  所有的  菜单  并且 默认选中  角色 原来 对应的 菜单
+        $('#streeId1').tree({
+            url: '../role/queryRoleByUserid?uid='+userid1,
+            checkbox: true,
+            // 去掉 父子节点 级联
+            cascadeCheck:false,
+        });
+
+    }
+    $("#bdrole").click(function(){
+        var  treecheckid=checkedTreeid();
+        alert(userid1)
+        $.ajax({
+            url:"../role/updateUserRole",
+            data:{Rolecheckid:treecheckid,uid:userid1},
+            type:"post",
+            success:function(flag){
+                //代表 成功
+                if(flag>=0){
+                    alert("绑定成功!!!")
+                    $("#showDialogIdrole").dialog("close");
+                }else{
+                    alert("绑定失败!!!");
+                }
+            },error:function(){
+                alert("gun")
+
+            }
+        })
+    })
+    function  checkedTreeid(){
+        var  arr= $('#streeId1').tree('getChecked');
+        var  checkid='';
+        for (var i = 0; i < arr.length; i++) {
+            checkid+=","+arr[i].rid;
+        }
+        return  checkid ;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="p" class="easyui-panel" title="My Panel"
+     style="width:500px;height:150px;padding:10px;"
+     data-options="iconCls:'icon-save',closable:true,    
+                collapsible:true,minimizable:true,maximizable:true">
+    <input class="easyui-textbox" id="roleinfoId" data-options="iconCls:'icon-search'" style="width:300px">
+    <a id="btn" href="javaScript:queryRole()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
+</div>
+<div id="aa"></div>
+<table  id="datagridId33">
+
+</table>
+
+<script type="text/javascript">
+    $(function(){
+        queryRole();
+    })
+    function queryRole(){
+
+        $('#datagridId33').datagrid({
+            url:'../tree/queryTree',
+            method:"post",    //请求方式
+            pagination:true,    //显示分页工具栏
+            pageNumber:1,    //初始页码
+            pageSize:1,    //初始页面行数，必须在pageList中
+            pageList:[1,2,3,5,10,15,20],    //页面显示行数列表
+            fitColumns:true,    //自适应容器大小
+
+            striped:true,//斑马线效果
+            rownumbers:true,//显示行号
+            ctrlSelect:true,//平常只能选择一行，按住ctrl可以选择多行
+            columns:[
+                [
+                {field:'id',title:'id',width:100},
+                {field:'pid',title:'pid',width:100},
+                {field:'state',title:'状态',width:100},
+                {field:'url',title:'url',width:100,
+                }    ,
+                {field:'text',title:'text',width:100,
+                }    ,
+
+            ]
+            ]    ,
+            queryParams: {
+                //"role.roleinfo":$("#roleinfoId").val()
+
+            },
+
+            toolbar: [{
+                iconCls: 'icon-add',
+                text:'新增',
+                handler: function(){
+                    $('#showDialogId').dialog({
+                        title: '新增菜单',
+                        width: 400,
+                        height: 300,
+                        closable: true,
+                        closed: false,
+                        cache: false,
+
+                        href: '../addTreeJsp',
+                        modal: true ,
+                        buttons:[{
+                            text:'保存',
+                            handler:function(){
+                                $.ajax({
+                                    url:"../addTree",
+                                    type:"post",
+                                    data:$("#addTree").serialize(),
+                                    dataType:"text",
+                                    success:function (){
+                                        $.messager.alert('提示','新增成功！！！');
+                                        $('#datagridId33').datagrid('reload');
+                                        $('#showDialogId').dialog("close");
+                                    },
+                                    error:function (){
+                                        $.messager.alert('警告','后台错误，请使用debug调试！！！');
+                                    }
+                                })
+                            }
+                        },{
+                            text:'关闭',
+                            handler:function(){
+                                $('#showDialogId').dialog("close");
+                            }
+                        }]
+                    });
+                }
+            },'-',{
+                iconCls: 'icon-remove',
+                text:'删除',
+                handler: function(){
+                    var arr = $('#datagridId33').datagrid('getSelections');
+                    var delid = "";
+                    for(var i=0;i<arr.length;i++){
+                        delid += ","+arr[i].id;
+                    }
+                    delid = delid.substr(1);
+                    if(delid == ""){
+                        $.messager.alert('警告','请选择要删除的！！！','error');
+                    }else{
+                        $.messager.confirm('确认','确认想要删除'+delid+'号用户吗？',function(r){
+                            if (r){
+                                $.get("../delTree", {"delid":delid},function(){
+                                    $('#datagridId33').datagrid('reload');
+                                });
+                            }
+                        });
+                    }
+
+
+                }
+            },'-',{
+                iconCls: 'icon-edit',
+                text:'修改',
+                handler: function(){
+                    var arr = $('#datagridId33').datagrid('getSelections');
+                    if(arr.length!=1){
+                        $.messager.alert('警告','只能选择一条数据！！！','error');
+                    }else{
+                        var id = arr[0].id;
+                        $('#showDialogId').dialog({
+                            title: '修改菜单',
+                            width: 400,
+                            height: 300,
+                            closable: true,
+                            closed: false,
+                            cache: false,
+                            href: '../updTreeJsp?id='+id,
+                            modal: true ,
+                            buttons:[{
+                                text:'保存',
+                                handler:function(){
+                                    $.ajax({
+                                        url:"../updTree",
+                                        type:"post",
+                                        data:$("#addTree").serialize(),
+                                        dataType:"text",
+                                        success:function (){
+                                            $.messager.alert('提示','修改成功！！！');
+                                            $('#datagridId33').datagrid('reload');
+                                            $('#showDialogId').dialog("close");
+                                        },
+                                        error:function (){
+                                            $.messager.alert('警告','后台错误，请使用debug调试！！！');
+                                        }
+                                    })
+                                }
+                            },{
+                                text:'关闭',
+                                handler:function(){
+                                    $('#showDialogId').dialog("close");
+                                }
+                            }]
+                        });
+                    }
+
+                }
+            }]
+
+
+        });
+
+    }
+</script>
+</body>
+</html>

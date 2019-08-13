@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="StoreMapper" >
+  <resultMap id="BaseResultMap" type="com.jk.model.Store" >
+    <id column="sid" property="sid" jdbcType="INTEGER" />
+    <result column="simg" property="simg" jdbcType="VARCHAR" />
+    <result column="sinfo" property="sinfo" jdbcType="VARCHAR" />
+    <result column="slanguage" property="slanguage" jdbcType="VARCHAR" />
+    <result column="sname" property="sname" jdbcType="VARCHAR" />
+    <result column="sscore" property="sscore" jdbcType="DOUBLE" />
+    <result column="steam" property="steam" jdbcType="VARCHAR" />
+    <result column="stype" property="stype" jdbcType="INTEGER" />
+    <result column="sversion" property="sversion" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    sid, simg, sinfo, slanguage, sname, sscore, steam, stype, sversion
+  </sql>
+  <select id="queryStore" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_store   limit #{stat},#{rows}
+
+  </select>
+
+  <select id="queryCount"  resultType="long">
+    select  count(*) from  t_store
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_store
+    where sid = #{sid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.jk.model.Store" >
+    insert into t_store (sid, simg, sinfo, 
+      slanguage, sname, sscore, 
+      steam, stype, sversion
+      )
+    values (#{sid,jdbcType=INTEGER}, #{simg,jdbcType=VARCHAR}, #{sinfo,jdbcType=VARCHAR}, 
+      #{slanguage,jdbcType=VARCHAR}, #{sname,jdbcType=VARCHAR}, #{sscore,jdbcType=DOUBLE}, 
+      #{steam,jdbcType=VARCHAR}, #{stype,jdbcType=INTEGER}, #{sversion,jdbcType=VARCHAR}
+      )
+  </insert>
+  <delete id="delStore">
+    delete from  t_store  where   sid in (${delid})
+
+  </delete>
+  <insert id="addStore" parameterType="com.jk.model.Store" >
+    insert into t_store
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="sid != null" >
+        sid,
+      </if>
+      <if test="simg != null" >
+        simg,
+      </if>
+      <if test="sinfo != null" >
+        sinfo,
+      </if>
+      <if test="slanguage != null" >
+        slanguage,
+      </if>
+      <if test="sname != null" >
+        sname,
+      </if>
+      <if test="sscore != null" >
+        sscore,
+      </if>
+      <if test="steam != null" >
+        steam,
+      </if>
+      <if test="stype != null" >
+        stype,
+      </if>
+      <if test="sversion != null" >
+        sversion,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="sid != null" >
+        #{sid,jdbcType=INTEGER},
+      </if>
+      <if test="simg != null" >
+        #{simg,jdbcType=VARCHAR},
+      </if>
+      <if test="sinfo != null" >
+        #{sinfo,jdbcType=VARCHAR},
+      </if>
+      <if test="slanguage != null" >
+        #{slanguage,jdbcType=VARCHAR},
+      </if>
+      <if test="sname != null" >
+        #{sname,jdbcType=VARCHAR},
+      </if>
+      <if test="sscore != null" >
+        #{sscore,jdbcType=DOUBLE},
+      </if>
+      <if test="steam != null" >
+        #{steam,jdbcType=VARCHAR},
+      </if>
+      <if test="stype != null" >
+        #{stype,jdbcType=INTEGER},
+      </if>
+      <if test="sversion != null" >
+        #{sversion,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="queryStoreById" resultMap="BaseResultMap">
+    select * from t_store  where sid =#{sid}
+  </select>
+
+  <update id="updStore" parameterType="com.jk.model.Store" >
+    update t_store
+    <set >
+      <if test="simg != null" >
+        simg = #{simg,jdbcType=VARCHAR},
+      </if>
+      <if test="sinfo != null" >
+        sinfo = #{sinfo,jdbcType=VARCHAR},
+      </if>
+      <if test="slanguage != null" >
+        slanguage = #{slanguage,jdbcType=VARCHAR},
+      </if>
+      <if test="sname != null" >
+        sname = #{sname,jdbcType=VARCHAR},
+      </if>
+      <if test="sscore != null" >
+        sscore = #{sscore,jdbcType=DOUBLE},
+      </if>
+      <if test="steam != null" >
+        steam = #{steam,jdbcType=VARCHAR},
+      </if>
+      <if test="stype != null" >
+        stype = #{stype,jdbcType=INTEGER},
+      </if>
+      <if test="sversion != null" >
+        sversion = #{sversion,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where sid = #{sid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.jk.model.Store" >
+    update t_store
+    set simg = #{simg,jdbcType=VARCHAR},
+      sinfo = #{sinfo,jdbcType=VARCHAR},
+      slanguage = #{slanguage,jdbcType=VARCHAR},
+      sname = #{sname,jdbcType=VARCHAR},
+      sscore = #{sscore,jdbcType=DOUBLE},
+      steam = #{steam,jdbcType=VARCHAR},
+      stype = #{stype,jdbcType=INTEGER},
+      sversion = #{sversion,jdbcType=VARCHAR}
+    where sid = #{sid,jdbcType=INTEGER}
+  </update>
+</mapper>

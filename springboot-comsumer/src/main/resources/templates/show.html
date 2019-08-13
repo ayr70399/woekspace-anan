@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+<div id="p" class="easyui-panel"  title="条件查询"
+     style="width:1200px;height:150px;padding:10px;background:#fafafa;"
+     data-options="iconCls:'icon-save',closable:true,
+	                collapsible:true,minimizable:true,maximizable:true">
+
+    <input class="easyui-textbox" id="booknameId" data-options="iconCls:'icon-search'" style="width:300px">
+    贷款日期<input id="starttimeid" type="text" class="easyui-datebox" required="required"></input>
+    -----<input id="endtimeid" type="text" class="easyui-datebox" required="required"></input>
+    用户状态  <select id="lstatusid" class="easyui-combobox" name="dept" style="width:200px;">
+    <option  value="-1">---请选择---</option>
+    <option  value="1">正常</option>
+    <option  value="2">制裁</option>
+</select>
+    用户等级
+    <input id="llevelid" class="easyui-combobox"
+           data-options="valueField:'levelid',textField:'levelname',url:'../queryLevel'" /> <br>
+
+
+    <!--   <select id="llevelid1"  name="llevelid"  class="easyui-combobox" name="dept" style="width:200px;">
+                   <option  value="-1">---请选择---</option>
+             </select> -->
+    <a   id="btn" href="javaScript:queryBook()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
+</div>
+<div id="showd"></div>
+<div id="showDialogId" class="easyui-dialog" data-options="closed:false">
+</div>
+
+<table id="datagridId"></table>
+<script type="text/javascript">
+    $(function (){
+        queryBook();
+
+
+    })
+
+
+    function queryBook(){
+        $('#datagridId').datagrid({
+            url:'../queryStore',
+            method:"post",    //请求方式
+            pagination:true,    //显示分页工具栏
+            pageNumber:1,    //初始页码
+            pageSize:1,    //初始页面行数，必须在pageList中
+            pageList:[1,2,3,5,10,15,20],    //页面显示行数列表
+            fitColumns:true,    //自适应容器大小
+
+            striped:true,//斑马线效果
+            rownumbers:true,//显示行号
+            columns:[
+                [
+                    {field:'sid',title:'编号',width:100},
+                    {field:'sname',title:'名称',width:100},
+                    {field:'sinfo',title:'描述',width:100},
+                    {field:'steam',title:'组对',width:100},
+                    {field:'sversion',title:'sversion',width:100},
+                    {field:'sscore',title:'sscore',width:100},
+                    {field:'slanguage',title:'slanguage',width:100},
+                    {field:'simg',title:'图片',width:100 ,
+                        formatter: function(value,row,index){
+                            return "<img width='100' src='../"+value+"'>"
+                        }
+                    }  ,
+                    /*  {field:'uimg',title:'图片',width:100 ,
+                         formatter: function(value,row,index){
+                             return "<img width='100' src='../"+value+"'>"
+                         }
+                     }  ,  */
+
+
+                    {field:'l',title:'操作',width:100,align:'right',
+                        formatter: function(value,row,index){
+
+                            return '<input type="button" value="安装" onclick="addIns('+row.sid+')">';
+
+
+
+                        }
+                    }  ,
+
+                ]
+            ]  ,
+            queryParams: {
+
+                Storeid:$("#Storeid").val(),
+            },
+            onLoadSuccess:function(data){
+
+                $('.editcls').linkbutton({text:'11',plain:true,iconCls:'icon-save'});
+
+
+            },
+            toolbar: [{
+                iconCls: 'icon-add',
+                text:'新增',
+                handler: function(){
+                    $('#addFormId').reset();
+                    $('#showd').dialog({
+                        title: '新增用户',
+                        width: 600,
+                        height: 500,
+                        closable: true,
+                        closed: false,
+                        cache: false,
+
+                        href: '../addStoreJsp',
+                        modal: true ,
+                        buttons:[{
+                            text:'保存',
+                            handler:function(){
+                                $.ajax({
+                                    url:"../addStore",
+                                    type:"post",
+                                    data:$("#addFormId1").serialize(),
+                                    dataType:"text",
+                                    success:function (){
+                                        $.messager.alert('提示','新增成功！！！');
+                                        $('#datagridId').datagrid('reload');
+                                        $('#showd').dialog("close");
+                                    },
+                                    error:function (){
+                                        $.messager.alert('警告','后台错误，请使用debug调试！！！');
+                                    }
+                                })
+                            }
+                        },{
+                            text:'关闭',
+                            handler:function(){
+                                $('#showd').dialog("close");
+                            }
+                        }]
+                    });
+
+                }
+            },'-',{
+                iconCls: 'icon-remove',
+                text:'批量删除',
+                handler: function(){
+                    var arr = $('#datagridId').datagrid('getSelections');
+                    var delid = "";
+                    for(var i=0;i<arr.length;i++){
+                        delid += ","+arr[i].sid;
+                    }
+                    delid = delid.substr(1);
+                    /* var   count=0;
+                    for(var i=0;i<arr.length;i++){
+                        if(arr[i].pzt==2){
+                            count++;
+                        };
+                    }
+                     */
+
+                    if(delid == ""){
+                        $.messager.alert('警告','请选择要删除的！！！','error');
+                    }else{
+                        //if(count==arr.length){
+                        $.get("../delStore", {"delid":delid},function(){
+                            $('#datagridId').datagrid('reload');
+
+                        });
+                        //}else{
+                        // $.messager.alert('警告','只能删除下架的！！！','error');
+                        //}
+
+                    }
+
+
+
+
+
+                }
+            },'-',{
+                iconCls: 'icon-large-smartart',
+                text:'批量下架',
+                handler: function(){
+                    var arr = $('#datagridId').datagrid('getSelections');
+                    var ynid = "";
+                    for(var i=0;i<arr.length;i++){
+                        ynid += ","+arr[i].pid;
+                    }
+                    ynid = ynid.substr(1);
+                    var   count=0;
+                    for(var i=0;i<arr.length;i++){
+                        if(arr[i].pzt==1){
+                            count++;
+                        };
+                    }
+                    if(ynid == ""){
+                        $.messager.alert('警告','请选择要下架的书籍！！！','error');
+                    }else{
+
+                        if(count==arr.length){
+                            $.get("../updZt1", {"ynid":ynid},function(){
+                                $('#datagridId').datagrid('reload');
+                            });
+                        }else{
+                            $.messager.alert('警告','只能修改上架的书籍！！！','error');
+                        }
+                    }
+                }
+            },'-',{
+                iconCls: 'icon-edit',
+                text:'修改',
+                handler: function(){
+
+                    var arr = $("#datagridId").datagrid("getSelections");
+                    if(arr.length==0 || arr.length > 1){
+                        $.messager.alert('警告','只能修改单条数据！！！');
+                    }else{
+                        var ar = arr[0];
+                        $("#addFormId").form('load',ar);
+                        $('#showDialogId').dialog({
+                            title: '修改',
+                            width:500,
+                            height: 600,
+                            closed: false,
+                            cache: false,
+                            //  href:'../queryStoreById?sid='+arr[0].sid,
+                            modal: true ,
+                            buttons:[{
+                                text:'保存',
+                                handler:function(){
+                                    $.ajax({
+                                        url:"../updStore",
+                                        type:"post",
+                                        data:$("#addFormId").serialize(),
+                                        success:function (){
+                                            $('#showDialogId').dialog("close");
+                                            $('#datagridId').datagrid('reload');
+                                            $.messager.show({
+                                                title:'修改成功！',
+
+                                                msg:'消息将在3秒后关闭。',
+                                                timeout:3000,
+                                                showType:'slide'
+                                            });
+
+                                        },
+                                        error:function (){
+                                            $.messager.show({
+                                                title:'添加失败，请联系管理员',
+                                                msg:'消息将在3秒后关闭。',
+                                                timeout:3000,
+                                                showType:'slide'
+                                            });
+                                        }
+                                    })
+                                }
+                            },{
+                                text:'关闭',
+                                handler:function(){
+                                    $('#showDialogId').dialog("close");
+                                    $('#datagridId').datagrid('reload');
+                                }
+                            }]
+                        });
+                    }
+                }
+
+            }
+            ],
+
+
+        });
+    }
+
+    function  addIns(id){
+        alert(id)
+        $.ajax({
+            url:"../addIns?sid="+id,
+            type:"post",
+            success:function(flag){
+                if(flag==2){
+                    alert("已安装");
+                }else{
+                    location.href="../addIns1?sid="+id;
+                    alert("安装成功") ;
+                }
+            },
+            error:function(){
+                alert("gun");
+            }
+        })
+
+    }
+</script>
+</body>
+</html>

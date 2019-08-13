@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="springboot-annotation-provider" />
+        <module name="ssh-store" />
+        <module name="dubbo-api" />
+        <module name="poi" />
+        <module name="springboot-dubbo-consumer" />
+        <module name="springboot-provider" />
+        <module name="storecli" />
+        <module name="springboot-annotation-consumer" />
+        <module name="springboot-comsumer" />
+        <module name="privoder" />
+        <module name="dubbo-provider" />
+        <module name="consumer" />
+        <module name="springboot-dubbo-provider" />
+        <module name="sunday-api" />
+        <module name="hindercharts" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="8">
+      <module name="demo1" target="1.8" />
+      <module name="springboot-privator" target="1.8" />
+      <module name="springboot-privator1 (1)" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="consumer" options="-parameters" />
+      <module name="demo1" options="-parameters" />
+      <module name="dubbo-provider" options="-parameters" />
+      <module name="hindercharts" options="-parameters" />
+      <module name="poi" options="-parameters" />
+      <module name="privoder" options="-parameters" />
+      <module name="springboot-annotation-consumer" options="-parameters" />
+      <module name="springboot-annotation-provider" options="-parameters" />
+      <module name="springboot-comsumer" options="-parameters" />
+      <module name="springboot-dubbo-consumer" options="-parameters" />
+      <module name="springboot-dubbo-provider" options="-parameters" />
+      <module name="springboot-privator" options="-parameters" />
+      <module name="springboot-privator1" options="-parameters" />
+      <module name="springboot-privator1 (1)" options="-parameters" />
+      <module name="springboot-provider" options="-parameters" />
+      <module name="sunday-api" options="-parameters" />
+    </option>
+  </component>
+</project>

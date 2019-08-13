@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <script src="../highcharts/code/highcharts.js"></script>
+    <script src="../js/jquery.min.js"></script>
+
+</head>
+<body>
+<div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+</body>
+<SCRIPT>
+
+    $(function(){
+        $.ajax({
+            url:"../demo/queryDemo3",
+            type:"post",
+            dataType:"json",
+            success:function (data) {
+                var chart = Highcharts.chart('container', {
+                    title: {
+                        text: '2019 年1902B发展情况'
+                    },
+                    subtitle: {
+                        text: '金科教育'
+                    },
+                    yAxis: {
+                        title: {
+                            text: '就业人数'
+                        }
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle'
+                    },
+                    plotOptions: {
+                        series: {
+                            label: {
+                                connectorAllowed: false
+                            },
+                            pointStart: 1
+                        }
+                    },
+                    series: [{
+                        name: '日期',
+                        colorByPoint: true,
+                        data: data
+
+
+                    }],
+                    responsive: {
+                        rules: [{
+                            condition: {
+                                maxWidth: 600
+                            },
+                            chartOptions: {
+                                legend: {
+                                    layout: 'horizontal',
+                                    align: 'center',
+                                    verticalAlign: 'bottom'
+                                }
+                            }
+                        }]
+                    }
+                });
+            },error:function () {
+                alert("查询失败")
+            }
+        })
+    })
+
+
+
+
+
+</SCRIPT>
+</html>

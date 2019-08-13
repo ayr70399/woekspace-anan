@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form id="ff" method="post">
+
+    名称: <input type="text" name="cname" /><br/>
+    开始日期  <input type="date" name="starttime" /> ---
+    结束日期    <input type="date" name="endtime" /><br/>
+    高于<input name="minprice">----低于<input  name="maxprice">
+
+    <input type="button" value="搜索" onclick="find()">
+</form>
+<div id="aa"></div>
+<table  id="datagridIdl">
+
+</table>
+
+</form>
+
+<script type="text/javascript">
+
+    //条件查询
+    function find(){
+        $('#datagridIdl').datagrid('load', myserialize($("#ff")));
+
+    }
+    //拼接查询条件
+    function myserialize (obj) {
+        var o = {};
+        var a = obj.serializeArray();
+        $.each(a, function() {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        console.log(o);
+        return o;
+    };
+
+    $(function(){
+        queryRole();
+
+
+    })
+    function queryRole(){
+
+        $('#datagridIdl').datagrid({
+            url:'../log/queryLog',
+            method:"post",    //请求方式
+            pagination:true,    //显示分页工具栏
+            pageNumber:1,    //初始页码
+            pageSize:1,    //初始页面行数，必须在pageList中
+            pageList:[1,2,3,5,10,15,20],    //页面显示行数列表
+            fitColumns:true,    //自适应容器大小
+
+            striped:true,//斑马线效果
+            rownumbers:true,//显示行号
+            ctrlSelect:true,//平常只能选择一行，按住ctrl可以选择多行
+            columns:[
+                [
+                {field:'id',title:'编号',width:100},
+                {field:'lname',title:'名称',width:100},
+                {field:'ltime',title:'日期',width:100},
+               {field:'logip',title:'ip',width:100},
+                    {field:'patternurl',title:'url',width:100},
+                {field:'userid',title:'用户ID',width:100},
+                {field:'flag',title:'returningValue',width:100,
+                  formatter: function(value,row,index){
+                      if (value==3) {
+                          return "用户名错误";
+                        }
+                      if(value==4){
+                        return "密码错误";
+                     }
+                     if(value==2){
+                         return "验证码错误";
+                    }
+                      if(value==1){
+                         return "登录成功";
+                      }if(value==5){
+                           return "用户名被锁定";
+                        }
+                   }
+
+               },
+
+
+            ]
+            ]    ,
+            queryParams: {
+                //"role.roleinfo":$("#roleinfoId").val()
+
+            },
+
+            toolbar: [{
+                iconCls: 'icon-add',
+                text:'新增',
+                handler: function(){
+                    $('#showDialogId').dialog({
+                        title: '新增用户',
+                        width: 400,
+                        height: 300,
+                        closable: true,
+                        closed: false,
+                        cache: false,
+
+
+                        modal: true ,
+                        href: '../log/addLogJsp',
+
+                        buttons:[{
+                            text:'保存',
+                            handler:function(){
+                                $.ajax({
+                                    url:"../log/addLog",
+                                    type:"post",
+                                    data:$("#addFormId").serialize(),
+                                    dataType:"text",
+                                    success:function (){
+                                        $.messager.alert('提示','新增成功！！！');
+                                        $('#datagridIdl').datagrid('reload');
+                                        $('#showDialogId').dialog("close");
+                                    },
+                                    error:function (){
+                                        $.messager.alert('警告','后台错误，请使用debug调试！！！');
+                                    }
+                                })
+                            }
+                        },{
+                            text:'关闭',
+                            handler:function(){
+                                $('#showDialogId').dialog("close");
+                            }
+                        }]
+                    });
+                }
+            },'-',{
+                iconCls: 'icon-remove',
+                text:'删除',
+                handler: function(){
+                    var arr = $('#datagridIdl').datagrid('getSelections');
+                    var delid = "";
+                    for(var i=0;i<arr.length;i++){
+                        delid += ","+arr[i].id;
+                    }
+                    delid = delid.substr(1);
+                    if(delid == ""){
+                        $.messager.alert('警告','请选择要删除的用户！！！','error');
+                    }else{
+                        $.messager.confirm('确认','确认想要删除'+delid+'号用户吗？',function(r){
+                            if (r){
+                                $.get("../log/delLog", {"delid":delid},function(){
+                                    $('#datagridIdl').datagrid('reload');
+                                });
+                            }
+                        });
+                    }
+
+
+                }
+            },'-',{
+                iconCls: 'icon-edit',
+                text:'修改',
+                handler: function(){
+                    var arr = $('#datagridIdl').datagrid('getSelections');
+                    if(arr.length!=1){
+                        $.messager.alert('警告','只能选择一条数据！！！','error');
+                    }else{
+                        var id = arr[0].id;
+                        $('#showDialogId').dialog({
+                            title: '修改用户',
+                            width: 400,
+                            height: 300,
+                            closable: true,
+                            closed: false,
+                            cache: false,
+                            href: '../log/queryLogById?id='+id,
+                            modal: true ,
+                            buttons:[{
+                                text:'保存',
+                                handler:function(){
+                                    $.ajax({
+                                        url:"../log/updLog",
+                                        type:"post",
+                                        data:$("#addFormId").serialize(),
+                                        dataType:"text",
+                                        success:function (){
+                                            $.messager.alert('提示','修改成功！！！');
+                                            $('#datagridIdl').datagrid('reload');
+                                            $('#showDialogId').dialog("close");
+                                        },
+                                        error:function (){
+                                            $.messager.alert('警告','后台错误，请使用debug调试！！！');
+                                        }
+                                    })
+                                }
+                            },{
+                                text:'关闭',
+                                handler:function(){
+                                    $('#showDialogId').dialog("close");
+                                }
+                            }]
+                        });
+                    }
+
+                }
+            }]
+
+
+        });
+
+
+    }
+
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.dao.RoleTreeMapper" >
+  <resultMap id="BaseResultMap" type="com.jk.model.RoleTree" >
+    <id column="rtid" property="rtid" jdbcType="INTEGER" />
+    <result column="rid" property="rid" jdbcType="INTEGER" />
+    <result column="id" property="id" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    rtid, rid, id
+  </sql>
+<delete id="deleteByRoleid">
+  delete from r_t where rid=#{rid}
+</delete>
+  <select id="queryTreeByRoleid" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from r_t
+    where rid = #{rid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from r_t
+    where rtid = #{rtid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.jk.model.RoleTree" >
+    insert into r_t (rtid, rid, id
+      )
+    values (#{rtid,jdbcType=INTEGER}, #{rid,jdbcType=INTEGER}, #{id,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.jk.model.RoleTree" >
+    insert into r_t
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="rtid != null" >
+        rtid,
+      </if>
+      <if test="rid != null" >
+        rid,
+      </if>
+      <if test="id != null" >
+        id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="rtid != null" >
+        #{rtid,jdbcType=INTEGER},
+      </if>
+      <if test="rid != null" >
+        #{rid,jdbcType=INTEGER},
+      </if>
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.jk.model.RoleTree" >
+    update r_t
+    <set >
+      <if test="rid != null" >
+        rid = #{rid,jdbcType=INTEGER},
+      </if>
+      <if test="id != null" >
+        id = #{id,jdbcType=INTEGER},
+      </if>
+    </set>
+    where rtid = #{rtid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.jk.model.RoleTree" >
+    update r_t
+    set rid = #{rid,jdbcType=INTEGER},
+      id = #{id,jdbcType=INTEGER}
+    where rtid = #{rtid,jdbcType=INTEGER}
+  </update>
+</mapper>

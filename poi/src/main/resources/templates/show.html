@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <script type="text/javascript" src="../jslib/jquery-1.8.0.js"></script>
+</head>
+<body>
+
+<input type="button" onclick="exportFile()" value="导出Excel" >
+<input type="checkbox"  name="xz" value="name">sname
+<input type="checkbox"  name="xz"  value="sid">sid
+<input type="checkbox"  name="xz"  value="simg">simg
+<input type="checkbox"  name="xz" value="sinfo">sinfo
+<input type="checkbox"  name="xz" value="slanguage">slanguage
+<input type="checkbox"  name="xz" value="sscore">sscore
+<input type="checkbox"  name="xz" value="stype">stype
+<input type="checkbox"  name="xz" value="sversion">sversion
+<form action="../importExcel" method="post" enctype="multipart/form-data" >
+
+    <input type="file" name="file"/>
+    <input type="submit" value="导入excel"/>
+</form>
+<table border="1">
+    <tr>
+        <td>id</td>
+        <td>name</td>
+        <td>simg</td>
+        <td>sinfo</td>
+        <td>slanguage</td>
+        <td>sscore</td>
+        <td>stype</td>
+        <td>sversion</td>
+
+
+    </tr>
+    <tr th:each="store:${list}">
+        <td th:text="${store.sid}">id</td>
+        <td th:text="${store.sname}">name</td>
+        <td th:text="${store.simg}">simg</td>
+        <td th:text="${store.sinfo}">simg</td>
+        <td th:text="${store.sscore}">sscore</td>
+        <td th:text="${store.slanguage}">slanguage</td>
+        <td th:switch="${store.stype}">
+                <p th:case="1">手机</p>
+                <p th:case="2">电脑</p>
+        </td>
+        <td th:text="${store.sversion}">sscore</td>
+
+    </tr>
+</table>
+<script>
+   function exportExcel() {
+       location.href="../exportExcel";
+   }
+function exportFile() {
+var name="";
+alert(1)
+    $("input[type=checkbox]:checked").each(function() {
+        name += ","+$(this).val();
+
+})
+    name="id"+name;
+    alert(name)
+    location.href="../exportExcel?name="+name;
+}
+
+    
+</script>
+</body>
+</html>

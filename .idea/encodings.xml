@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$/consumer" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dubbo-provider" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/hindercharts" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/poi" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/privoder" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springboot-annotation-consumer" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springboot-annotation-provider" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springboot-comsumer" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springboot-demo" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springboot-demo/sunday-api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springboot-dubbo-consumer" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springboot-dubbo-provider" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springboot-provider" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ssh-store" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/storecli" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
+  </component>
+</project>

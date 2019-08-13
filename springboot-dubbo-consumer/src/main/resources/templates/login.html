@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en"/>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="../jslib/jquery-1.8.0.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="../css/demo.css" />
+    <!--必要样式-->
+    <link rel="stylesheet" type="text/css" href="../css/component.css" />
+    <script type="text/javascript" src="../jslib/easyui/jquery.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../jslib/easyui/themes/black/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../jslib/easyui/themes/icon.css">
+    <script type="text/javascript" src="../jslib/easyui/jquery.easyui.min.js"></script>
+    <link rel="stylesheet" href="../uploadify/uploadify.css">
+    <script src="../uploadify/jquery.uploadify.min.js"></script>
+    <script type="text/javascript" src="../jslib/easyui/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<body>
+<div class="container demo-1">
+    <div class="content">
+        <div id="large-header" class="large-header">
+            <canvas id="demo-canvas"></canvas>
+            <div class="logo_box">
+                <h3>欢迎你</h3>
+                <form>
+                    <div class="input_outer">
+                        <span class="u_user"></span>
+                        <input name="uname" id="userNameId"  class="text" style="color: #FFFFFF !important" type="text" placeholder="请输入账户">
+                    </div><span id="userNameSpan"></span>
+                    <div class="input_outer">
+                        <span class="us_uer"></span>
+                        <input name="upwd" id="userPwdId" class="text" style="color: #FFFFFF !important; position:absolute; z-index:100;"value="" type="password" placeholder="请输入密码">
+                    </div><span id="userPwdSpan"></span>
+                    <div class="input_outer">
+                        <input name="checkcode" id="checkcode"  onblur="testPwd()" class="text" style="color: #FFFFFF !important; position:absolute; z-index:100;"value="" placeholder="请输入验证码">
+                    </div>
+                        <img id="checkImg" src="../user/checkImg" width="150px"  height="50px" onclick="change()" title="点击更换验证码"><br>
+
+                        <span id="checkcodeSpan">
+		                        </span>
+                    <div class="mb2">
+                        <a class="act-but submit" href="javascript:clickLogin()" style="color: #FFFFFF">登录</a>
+                        <a class="act-but submit" href="../zcJsp"  style="color: #FFFFFF">注册</a>
+                    </div>
+
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div><!-- /container -->
+<script type="text/javascript">
+
+    function change(){
+        var img1=document.getElementById("checkImg");
+        img1.src="../user/checkImg?"+new Date(); //加时间戳防止缓存
+    }
+
+
+    var  count=0;
+    function clickLogin(){
+
+
+        if($("#userNameId").val()==null || $("#userNameId").val()==""){
+            $("#userNameSpan").html("<font color='red'>用户名不能为空！！！</font>");
+            return ;
+        }
+        if($("#userPwdId").val()==null || $("#userPwdId").val()==""){
+            $("#userPwdSpan").html("<font color='red'>密码不能为空！！！</font>");
+            return ;
+        }
+        if($("#checkcode").val()==null || $("#checkcode").val()==""){
+            $("#checkcodeSpan").html("<font color='red'>验证码不能为空！！！</font>");
+            return ;
+        }
+
+        $.ajax({
+            url:"../user/LoginUser",
+            type:"post",
+            data:$("form").serialize(),
+            dataType:"text",
+            success:function (flag){
+                if(flag==2){
+                    $("#checkcodeSpan").html("<font color='red'>验证码错误！！！</font>");
+
+                }if(flag==3){
+                    $("#userNameSpan").html("<font color='red'>用户名不存在！！！</font>");
+                }else if(flag==4){
+                    count+=1;
+                    alert(count)
+                    $("#userPwdSpan").html("<font color='red'>密码错误！！！</font>");
+                    if(count>=2){
+                        alert("请验证用户名")
+                    }
+
+                }else{
+
+                    location.href = "../tree/showTree";
+                }
+            },
+            error:function (){
+                alert("后台错误，请使用debug调试！！！");
+            }
+        })
+    }
+
+
+</script>
+
+<script src="../js/TweenLite.min.js"></script>
+<script src="../js/EasePack.min.js"></script>
+<script src="../js/rAF.js"></script>
+<script src="../js/demo-1.js"></script>
+</body>
+</html>

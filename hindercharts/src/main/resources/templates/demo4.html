@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../highcharts/code/highcharts.js"></script>
+    <script src="../js/jquery.min.js"></script>
+
+</head>
+<body>
+<div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+</body>
+<script>
+
+    $(function () {
+        $.ajax({
+            url: "../demo/queryDemo1",
+            type: "post",
+            dateType: "json",
+            success: function (data) {
+
+                var chart = Highcharts.chart('container',{
+                    chart: {
+                        type: 'area'
+                    },
+                    title: {
+                        text: '美苏核武器库存量'
+                    },
+                    subtitle: {
+                        text: '数据来源: <a href="https://thebulletin.metapress.com/content/c4120650912x74k7/fulltext.pdf">' +
+                            'thebulletin.metapress.com</a>'
+                    },
+                    xAxis: {
+                        allowDecimals: false
+                    },
+                    yAxis: {
+                        title: {
+                            text: '核武库国家'
+                        },
+                        labels: {
+                            formatter: function () {
+                                return this.value / 1000 + 'k';
+                            }
+                        }
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name} 制造 <b>{point.y:,.0f}</b>枚弹头'
+                    },
+                    plotOptions: {
+                        area: {
+                            pointStart: 1940,
+                            marker: {
+                                enabled: false,
+                                symbol: 'circle',
+                                radius: 2,
+                                states: {
+                                    hover: {
+                                        enabled: true
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    series: [{
+                        name: '日期',
+                        colorByPoint: true,
+                        data: data
+
+
+                    }]
+                });
+            }
+        })
+    })
+
+</script>
+</html>

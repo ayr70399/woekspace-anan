@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="p" class="easyui-panel" title="My Panel"
+     style="width:500px;height:150px;padding:10px;"
+     data-options="iconCls:'icon-save',closable:true,    
+                collapsible:true,minimizable:true,maximizable:true">
+    <input class="easyui-textbox" id="roleinfoId" data-options="iconCls:'icon-search'" style="width:300px">
+    <a id="btn" href="javaScript:queryRole()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
+</div>
+<div id="aa"></div>
+<table  id="datagridId1">
+
+</table>
+<div  id="showDialogTreeId">
+    <ul  id="streeId"></ul>
+    <input  type="button"  value="绑定"  id="bdtreeid">
+</div>
+<script type="text/javascript">
+    $(function(){
+        queryRole();
+    })
+    function queryRole(){
+
+        $('#datagridId1').datagrid({
+            url:'../role/queryRole',
+            method:"post",    //请求方式
+            pagination:true,    //显示分页工具栏
+            pageNumber:1,    //初始页码
+            pageSize:1,    //初始页面行数，必须在pageList中
+            pageList:[1,2,3,5,10,15,20],    //页面显示行数列表
+            fitColumns:true,    //自适应容器大小
+
+            striped:true,//斑马线效果
+            rownumbers:true,//显示行号
+            ctrlSelect:true,//平常只能选择一行，按住ctrl可以选择多行
+            columns:[
+                [
+                {field:'rid',title:'角色编号',width:100},
+                {field:'rname',title:'角色名称',width:100},
+                {field:'ll',title:'操作',width:100,
+                    formatter: function(value,row,index){
+                        var btn = '<a class="editcls"  href="javascript:bdQx('+row.rid+')"></a>';
+
+                        return btn;
+
+                    }
+                },
+            ]
+            ]    ,
+            queryParams: {
+                //"role.roleinfo":$("#roleinfoId").val()
+
+            },
+            onLoadSuccess:function(data){
+                $('.editcls').linkbutton({text:'绑定权限',plain:true,iconCls:'icon-filter'});
+            },
+            toolbar: [{
+                iconCls: 'icon-add',
+                text:'新增',
+                handler: function(){
+                    $('#showDialogId').dialog({
+                        title: '新增用户',
+                        width: 400,
+                        height: 300,
+                        closable: true,
+                        closed: false,
+                        cache: false,
+
+                        href: '../role/addroleJsp',
+                        modal: true ,
+                        buttons:[{
+                            text:'保存',
+                            handler:function(){
+                                $.ajax({
+                                    url:"../role/addRole",
+                                    type:"post",
+                                    data:$("#addRole").serialize(),
+                                    dataType:"text",
+                                    success:function (){
+                                        $.messager.alert('提示','新增成功！！！');
+                                        $('#datagridId1').datagrid('reload');
+                                        $('#showDialogId').dialog("close");
+                                    },
+                                    error:function (){
+                                        $.messager.alert('警告','后台错误，请使用debug调试！！！');
+                                    }
+                                })
+                            }
+                        },{
+                            text:'关闭',
+                            handler:function(){
+                                $('#showDialogId').dialog("close");
+                            }
+                        }]
+                    });
+                }
+            },'-',{
+                iconCls: 'icon-remove',
+                text:'删除',
+                handler: function(){
+                    var arr = $('#datagridId1').datagrid('getSelections');
+                    var delid = "";
+                    for(var i=0;i<arr.length;i++){
+                        delid += ","+arr[i].roleid;
+                    }
+                    delid = delid.substr(1);
+                    if(delid == ""){
+                        $.messager.alert('警告','请选择要删除的用户！！！','error');
+                    }else{
+                        $.messager.confirm('确认','确认想要删除'+delid+'号用户吗？',function(r){
+                            if (r){
+                                $.get("../role/delRole", {"delid":delid},function(){
+                                    $('#datagridId1').datagrid('reload');
+                                });
+                            }
+                        });
+                    }
+
+
+                }
+            },'-',{
+                iconCls: 'icon-edit',
+                text:'修改',
+                handler: function(){
+                    var arr = $('#datagridId1').datagrid('getSelections');
+                    if(arr.length!=1){
+                        $.messager.alert('警告','只能选择一条数据！！！','error');
+                    }else{
+                        var id = arr[0].roleid;
+                        $('#showDialogId').dialog({
+                            title: '修改用户',
+                            width: 400,
+                            height: 300,
+                            closable: true,
+                            closed: false,
+                            cache: false,
+                            href: '../role/updRoleJsp?roleid='+id,
+                            modal: true ,
+                            buttons:[{
+                                text:'保存',
+                                handler:function(){
+                                    $.ajax({
+                                        url:"../role/updRole",
+                                        type:"post",
+                                        data:$("#updateRole").serialize(),
+                                        dataType:"text",
+                                        success:function (){
+                                            $.messager.alert('提示','修改成功！！！');
+                                            $('#datagridId1').datagrid('reload');
+                                            $('#showDialogId').dialog("close");
+                                        },
+                                        error:function (){
+                                            $.messager.alert('警告','后台错误，请使用debug调试！！！');
+                                        }
+                                    })
+                                }
+                            },{
+                                text:'关闭',
+                                handler:function(){
+                                    $('#showDialogId').dialog("close");
+                                }
+                            }]
+                        });
+                    }
+
+                }
+            }]
+
+
+        });
+        function  updRole(id){
+            alert(1)
+            $('#showDialogId').dialog({
+                title: '修改用户',
+                width: 400,
+                height: 300,
+                closable: true,
+                closed: false,
+                cache: false,
+                href: '../role/updRoleJsp?rid='+id,
+                modal: true ,
+                buttons:[{
+                    text:'保存',
+                    handler:function(){
+                        $.ajax({
+                            url:"../role/updRole",
+                            type:"post",
+                            data:$("#updateRole").serialize(),
+                            dataType:"text",
+                            success:function (){
+                                $.messager.alert('提示','修改成功！！！');
+                                $('#datagridId1').datagrid('reload');
+                                $('#showDialogId').dialog("close");
+                            },
+                            error:function (){
+                                $.messager.alert('警告','后台错误，请使用debug调试！！！');
+                            }
+                        })
+                    }
+                },{
+                    text:'关闭',
+                    handler:function(){
+                        $('#showDialogId').dialog("close");
+                    }
+                }]
+            });
+        }
+
+    }
+    var  roleid;
+    function  bdQx(id){
+        roleid=id;
+        $('#showDialogTreeId').dialog({
+            title: '绑定权限',
+            width: 600,
+            height: 500,
+            closable: true,
+            closed: false,
+            cache: false,
+
+        })
+        //加载  所有的  菜单  并且 默认选中  角色 原来 对应的 菜单
+        $('#streeId').tree({
+            url: '../tree/showCheckedTree?rid='+id,
+            checkbox: true,
+            // 去掉 父子节点 级联
+            cascadeCheck:false,
+        });
+    }
+
+    $('#bdtreeid').click(function(){
+        var  treecheckid=checkedTreeid();
+        alert(roleid)
+        $.ajax({
+            url:"../tree/updateRoleTree",
+            data:{treecheckid:treecheckid,rid:roleid},
+            type:"post",
+            success:function(flag){
+                //代表 成功
+                if(flag>=0){
+                    alert("绑定成功!!!")
+                    $("#showDialogTreeId").dialog("close");
+                }else{
+                    alert("绑定失败!!!");
+                }
+            },error:function(){
+                alert("gun")
+
+            }
+        })
+    })
+    function  checkedTreeid(){
+        var  arr= $('#streeId').tree('getChecked');
+        var  checkid='';
+        for (var i = 0; i < arr.length; i++) {
+            checkid+=","+arr[i].id;
+        }
+        return  checkid ;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" type="text/css" href="../jslib/easyui/themes/black/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../jslib/easyui/themes/icon.css">
+    <script type="text/javascript" src="../jslib/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../jslib/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../jslib/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <link rel="stylesheet" href="../uploadify/uploadify.css">
+    <script src="../uploadify/jquery.uploadify.min.js"></script>
+</head>
+<body>
+<div id="cc"   data-options="fit:true" class="easyui-layout" style="width:600px;height:400px;">
+    <div data-options="region:'north',title:'',split:true" style="height:100px;">
+        <div><font  color="blue"  size="7">欢迎</font><font  color="red"  size="7">${loginUser.username}</font><font  color="blue"  size="7">登录</font>
+
+        </div>
+    </div>
+
+
+    <div data-options="region:'west',title:'West',split:true" style="width:200px;">
+        <ul  id="treeId"></ul>
+    </div>
+    <div data-options="region:'center',title:'center title'" style="padding:5px;background:#eee;">
+        <div id="showTablesId" fit="true" class="easyui-tabs" style="width:500px;height:250px;">
+            <div title="Tab1" style="padding:20px;display:none;">
+                tab1
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div  id="showDialogId"></div>
+<script type="text/javascript">
+    $('#treeId').tree({
+        url:'../queryTreeByUserid',
+        onClick:function(node){
+            if(node.url!=null || node.url!= ""){
+                var seltab = $('#showTablesId').tabs('exists',node.text);
+                if(seltab){
+                    $('#showTablesId').tabs('select',node.text);
+                }else{
+                    $('#showTablesId').tabs('add',{
+                        title:node.text,
+                        closable:true,
+                        href:"../"+node.url,
+                        tools:[{
+                            iconCls:'icon-mini-refresh',
+                            handler:function(){
+                                //刷新当前tabs选项卡的页面内容
+                                // 调用 'refresh' 方法更新选项卡面板的内容
+                                //var tab = $('#showTablesId').tabs('getSelected');
+                                // 获取选择的面板
+                                //tab.panel('refresh', "${pageContext.request.contextPath}"+node.url);
+                                $('#datagridId').datagrid('reload');
+                            }
+                        }]
+                    });
+                }
+            }
+        }
+
+    });
+
+
+</script>
+</body>
+</html>

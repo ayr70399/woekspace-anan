@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form id="addFormId">
+    <input name="id" th:value="${log.id}" >
+    lname <input  name="lname"  th:value="${log.ltime}">
+    ltime <input name="ltime" type="text"
+           th:value="${#dates.format(book.bookdate,'yyyy-MM-dd')}"
+           class="easyui-datebox" required="required"></input>
+
+</form>
+</body>
+</html>

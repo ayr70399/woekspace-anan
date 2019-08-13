@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form id="addFormId">
+    sname <input name="sname">
+    simg<div id="show_file"></div>
+    <img id="show_img" width="100" height="100"/>
+    <input type="file" id="uploadImg" name="upFile"/>
+    <input type="hidden" name='simg' size="100"/>
+    steam<input name="steam">
+    sversion<input name="sversion">
+
+    sscore<input name="sscore">
+    slanguage<input name="slanguage">
+    sinfo<input name="sinfo">
+
+
+</form>
+<script type="text/javascript">
+    $.ajax({
+        url:"${pageContext.request.contextPath}/StoreAction!queryType.action",
+        success:function (data){
+            alert(data)
+            var json = eval("("+data+")");
+            var thtml = '<option value="-1">--请选择--</option>';
+            for (var i = 0; i < json.length; i++) {
+                thtml+='<option value="'+json[i].tid+'">'+json[i].tname+'</option>';
+            }
+            $("[name='stype']").html(thtml);
+        },
+        error:function (){
+            alert("后台有误，请使用debug调试！！！");
+        }
+    })
+    //AJAX 异步 上传文件 不保存数据 
+    $("#uploadImg").uploadify({
+        //插件自带  不可忽略的参数flash插件
+        'swf': '../uploadify/uploadify.swf',
+        //前台请求后台的url 不可忽略的参数 ******
+        'uploader': '../upFile',
+        //给div的进度条加背景 不可忽略******
+        'queueID': 'show_file',
+        //上传文件文件名 跟file标签 name值 保持一致******
+        'fileObjName' : 'upFile',
+        //给上传按钮设置文字
+        'buttonText': '上传',
+        //设置文件是否自动上传
+        'auto': true,
+        //可以同时选择多个文件 默认为true  不可忽略
+        'multi': true,
+        //上传后队列是否消失
+        'removeCompleted': true,
+        //队列消失时间
+        'removeTimeout' : 1,
+        //上传文件的个数，项目中一共可以上传文件的个数
+        'uploadLimit':  -1,
+        //上传文件的类型
+        'fileTypeExts': '*.*',
+        //成功回调函数 file：文件对象。data后台输出数据
+        'onUploadSuccess':function(file,data,response){
+            //alert(file.name+" 路径："+data.imagePath)
+            //图片回显， 预览
+            $("#show_img").attr("src","../"+data)
+            // 文本框 回填
+            $("[name='simg']").val(data);
+        }
+
+    });
+
+</script>
+</body>
+</html>
