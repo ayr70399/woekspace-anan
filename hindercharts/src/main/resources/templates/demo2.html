@@ -18,49 +18,37 @@
             type:"post",
             dataType:"json",
             success:function (data) {
-                var chart = Highcharts.chart('zhu',{
-                    chart: {
-                        type: 'column'
-                    },
-                    title: {
-                        text: '月平均注册用户数'
-                    },
-                    subtitle: {
-                        text: '数据来源: WorldClimate.com'
-                    },
-                    xAxis: {
-                        categories: [
-                            '一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'
-                        ],
-                        crosshair: true
-                    },
-                    yAxis: {
-                        min: 0,
+                var chart = null;
+                $.getJSON('https://data.jianshukeji.com/jsonp?filename=json/range.json&callback=?', function (data) {
+                    chart = Highcharts.chart('container', {
+                        chart: {
+                            type: 'arearange',
+                            zoomType: 'x' // 水平缩放
+                        },
                         title: {
-                            text: '注册量 (个)'
-                        }
-                    },
-                    tooltip: {
-                        // head + 每个 point + footer 拼接成完整的 table
-                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
-                        footerFormat: '</table>',
-                        shared: true,
-                        useHTML: true
-                    },
-                    plotOptions: {
-                        column: {
-                            borderWidth: 0
-                        }
-                    },
-                    series: [{
-                        name: '月份',
-                        colorByPoint: true,
-                        data: data
-
-
-                    }]
+                            text: '某地白天温度变化'
+                        },
+                        xAxis: {
+                            type: 'datetime',
+                            crosshair: true // 启用 x 轴准星线
+                        },
+                        yAxis: {
+                            title: {
+                                text: null
+                            }
+                        },
+                        tooltip: {
+                            shared: true,
+                            valueSuffix: '°C'
+                        },
+                        legend: {
+                            enabled: false // 关闭图例
+                        },
+                        series: [{
+                            name: '月份',
+                            data: data
+                        }]
+                    });
                 });
             },error:function () {
                 alert("后台有误！")
