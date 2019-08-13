@@ -19,51 +19,51 @@
             dataType:"json",
             success:function (data) {
                 var chart = Highcharts.chart('container', {
+                    chart: {
+                        type: 'areaspline'
+                    },
                     title: {
-                        text: '2019 年1902B发展情况'
-                    },
-                    subtitle: {
-                        text: '金科教育'
-                    },
-                    yAxis: {
-                        title: {
-                            text: '就业人数'
-                        }
+                        text: '不同家庭一周水果消费情况'
                     },
                     legend: {
                         layout: 'vertical',
-                        align: 'right',
-                        verticalAlign: 'middle'
+                        align: 'left',
+                        verticalAlign: 'top',
+                        x: 150,
+                        y: 100,
+                        floating: true,
+                        borderWidth: 1,
+                        backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+                    },
+                    xAxis: {
+                        categories: [
+                            '周一','周二','周三','周四','周五','周六','周日'
+                        ],
+                        plotBands: [{ // 标识出周末
+                            from: 4.5,
+                            to: 6.5,
+                            color: 'rgba(68, 170, 213, .2)'
+                        }]
+                    },
+                    yAxis: {
+                        title: {
+                            text: '水果 单位'
+                        }
+                    },
+                    tooltip: {
+                        shared: true,
+                        valueSuffix: ' 单位'
                     },
                     plotOptions: {
-                        series: {
-                            label: {
-                                connectorAllowed: false
-                            },
-                            pointStart: 1
+                        areaspline: {
+                            fillOpacity: 0.5
                         }
                     },
                     series: [{
                         name: '日期',
                         colorByPoint: true,
                         data: data
-
-
-                    }],
-                    responsive: {
-                        rules: [{
-                            condition: {
-                                maxWidth: 600
-                            },
-                            chartOptions: {
-                                legend: {
-                                    layout: 'horizontal',
-                                    align: 'center',
-                                    verticalAlign: 'bottom'
-                                }
-                            }
-                        }]
-                    }
+                    }]
                 });
             },error:function () {
                 alert("查询失败")
