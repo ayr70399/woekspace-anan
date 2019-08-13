@@ -18,30 +18,9 @@
             type:"post",
             dataType:"json",
             success:function (data) {
-                var chart = Highcharts.chart('container', {
-                    chart: {
-                        type: 'area',
-                        spacingBottom: 30
-                    },
+                Highcharts.chart('container', {
                     title: {
-                        text: '小张和小潘家水果的消费情况 *'
-                    },
-                    subtitle: {
-                        text: '* 小潘家的香蕉消费未知',
-                        floating: true,
-                        align: 'right',
-                        verticalAlign: 'bottom',
-                        y: 15
-                    },
-                    legend: {
-                        layout: 'vertical',
-                        align: 'left',
-                        verticalAlign: 'top',
-                        x: 150,
-                        y: 100,
-                        floating: true,
-                        borderWidth: 1,
-                        backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+                        text: '各周书籍数量'
                     },
                     xAxis: {
                         categories: data.name,
@@ -49,31 +28,17 @@
                     },
                     yAxis: {
                         title: {
-                            text: 'Y-Axis'
-                        },
-                        labels: {
-                            formatter: function () {
-                                return this.value;
-                            }
+                            text: '总个数'
                         }
                     },
-                    tooltip: {
-                        formatter: function () {
-                            return '<b>' + this.series.name + '</b><br/>' +
-                                this.x + ': ' + this.y;
-                        }
-                    },
-                    plotOptions: {
-                        area: {
-                            fillOpacity: 0.5
-                        }
-                    },
-                    credits: {
-                        enabled: false
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle'
                     },
                     series: [{
-                        name: '月份',
-                        data:data
+                        name: '总个数',
+                        data: data
                     }]
                 });
             },error:function () {
